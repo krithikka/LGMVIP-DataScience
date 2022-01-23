@@ -1,0 +1,25 @@
+data=read.csv(file=choose.files(),header=T,sep=",")
+data
+## Decision Tree for Iris dataset
+library(rpart)
+library(rpart.plot)
+
+v <- iris$Species
+
+table(v)
+set.seed(522)
+
+# runif function returns a uniform distribution which can be further conditionally split into 75-25 ratio
+iris[, 'train'] <- ifelse(runif(nrow(iris)) < 0.75, 1, 0)
+
+trainSet <- iris[iris$train == 1,]
+testSet <- iris[iris$train == 0, ]
+
+trainColNum <- grep('train', names(trainSet))
+
+trainSet <- trainSet[, -trainColNum]
+testSet <- testSet[, -trainColNum]
+
+treeFit <- rpart(Species~.,data=trainSet,method = 'class')
+print(treeFit)
+rpart.plot(treeFit, box.col=c("red", "green"))
